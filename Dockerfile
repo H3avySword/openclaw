@@ -34,6 +34,10 @@ ENV NODE_ENV=production
 # Make 'openclaw' command available globally
 RUN chmod +x /app/openclaw.mjs && ln -s /app/openclaw.mjs /usr/local/bin/openclaw
 
+# Copy entrypoint script that injects API keys into auth-profiles.json
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
 # Allow non-root user to write temp files during runtime/tests.
 RUN chown -R node:node /app
 
@@ -42,9 +46,7 @@ RUN chown -R node:node /app
 # This reduces the attack surface by preventing container escape via root privileges
 USER node
 
-# Copy entrypoint script that injects API keys into auth-profiles.json
-COPY docker-entrypoint.sh /app/docker-entrypoint.sh
-RUN chmod +x /app/docker-entrypoint.sh
+
 
 # Start gateway server with default config.
 # Binds to loopback (127.0.0.1) by default for security.
