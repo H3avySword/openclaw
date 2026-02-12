@@ -59,7 +59,7 @@ export function createReplyPrefixOptions(params: {
   channel?: string;
   accountId?: string;
 }): ReplyPrefixOptions {
-  const { responsePrefix, responsePrefixContextProvider, onModelSelected } =
+  const { responsePrefix, outboundRegex, responsePrefixContextProvider, onModelSelected } =
     createReplyPrefixContext(params);
-  return { responsePrefix, responsePrefixContextProvider, onModelSelected };
+  return { responsePrefix, outboundRegex, responsePrefixContextProvider, onModelSelected };
 }

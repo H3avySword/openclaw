@@ -98,7 +98,7 @@ cat > /home/node/.openclaw/openclaw.json << 'EOF'
 {
   "messages": {
     "outboundRegex": [
-      { "pattern": "<delete>[\\s\\S]*?</delete>", "replacement": "", "flags": "gi" }
+      { "pattern": "<disclaimer>[\\s\\S]*?</disclaimer>", "replacement": "", "flags": "gi" }
     ]
   }
 }
