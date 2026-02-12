@@ -186,6 +186,32 @@ describe("routeReply", () => {
     );
   });
 
+  it("applies outboundRegex when routing", async () => {
+    mocks.sendMessageSlack.mockClear();
+    const cfg = {
+      messages: {
+        outboundRegex: [
+          {
+            pattern: "<delete>[\\s\\S]*?</delete>",
+            replacement: "",
+            flags: "gi",
+          },
+        ],
+      },
+    } as unknown as OpenClawConfig;
+    await routeReply({
+      payload: { text: "hi<delete>gone</delete> there" },
+      channel: "slack",
+      to: "channel:C123",
+      cfg,
+    });
+    expect(mocks.sendMessageSlack).toHaveBeenCalledWith(
+      "channel:C123",
+      "hi there",
+      expect.any(Object),
+    );
+  });
+
   it("does not derive responsePrefix from agent identity when routing", async () => {
     mocks.sendMessageSlack.mockClear();
     const cfg = {

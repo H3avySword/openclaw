@@ -71,8 +71,10 @@ export async function routeReply(params: RouteReplyParams): Promise<RouteReplyRe
     : cfg.messages?.responsePrefix === "auto"
       ? undefined
       : cfg.messages?.responsePrefix;
+  const outboundRegex = cfg.messages?.outboundRegex;
   const normalized = normalizeReplyPayload(payload, {
     responsePrefix,
+    outboundRegex,
   });
   if (!normalized) {
     return { ok: true };
