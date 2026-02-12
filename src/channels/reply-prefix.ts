@@ -1,5 +1,6 @@
 import type { GetReplyOptions } from "../auto-reply/types.js";
 import type { OpenClawConfig } from "../config/config.js";
+import type { OutboundRegexRule } from "../config/types.messages.js";
 import { resolveEffectiveMessagesConfig, resolveIdentityName } from "../agents/identity.js";
 import {
   extractShortModelName,
@@ -11,13 +12,14 @@ type ModelSelectionContext = Parameters<NonNullable<GetReplyOptions["onModelSele
 export type ReplyPrefixContextBundle = {
   prefixContext: ResponsePrefixContext;
   responsePrefix?: string;
+  outboundRegex?: OutboundRegexRule[];
   responsePrefixContextProvider: () => ResponsePrefixContext;
   onModelSelected: (ctx: ModelSelectionContext) => void;
 };
 
 export type ReplyPrefixOptions = Pick<
   ReplyPrefixContextBundle,
-  "responsePrefix" | "responsePrefixContextProvider" | "onModelSelected"
+  "responsePrefix" | "outboundRegex" | "responsePrefixContextProvider" | "onModelSelected"
 >;
 
 export function createReplyPrefixContext(params: {
@@ -45,6 +47,7 @@ export function createReplyPrefixContext(params: {
       channel: params.channel,
       accountId: params.accountId,
     }).responsePrefix,
+    outboundRegex: cfg.messages?.outboundRegex,
     responsePrefixContextProvider: () => prefixContext,
     onModelSelected,
   };

@@ -49,6 +49,19 @@ export type AudioConfig = {
   };
 };
 
+/**
+ * 出站回复的正则替换规则。
+ * 在 AI 回复发送到渠道前按顺序应用。
+ */
+export type OutboundRegexRule = {
+  /** 正则表达式字符串 */
+  pattern: string;
+  /** 替换内容（支持 $1 等捕获组引用） */
+  replacement: string;
+  /** 正则标志，默认 "g" */
+  flags?: string;
+};
+
 export type MessagesConfig = {
   /** @deprecated Use `whatsapp.messagePrefix` (WhatsApp-only inbound prefix). */
   messagePrefix?: string;
@@ -72,6 +85,16 @@ export type MessagesConfig = {
    * Default: none
    */
   responsePrefix?: string;
+  /**
+   * 出站回复的正则替换规则列表。
+   * 在 AI 回复发送到渠道前按规则顺序依次应用。
+   *
+   * 示例：去除 `<delete>...</delete>` 标签及其内容
+   * ```json
+   * [{ "pattern": "<delete>[\\s\\S]*?</delete>", "replacement": "", "flags": "gi" }]
+   * ```
+   */
+  outboundRegex?: OutboundRegexRule[];
   groupChat?: GroupChatConfig;
   queue?: QueueConfig;
   /** Debounce rapid inbound messages per sender (global + per-channel overrides). */

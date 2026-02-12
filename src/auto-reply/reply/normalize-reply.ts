@@ -1,5 +1,7 @@
+import type { OutboundRegexRule } from "../../config/types.messages.js";
 import type { ReplyPayload } from "../types.js";
 import { sanitizeUserFacingText } from "../../agents/pi-embedded-helpers.js";
+import { applyOutboundRegex } from "../outbound-regex.js";
 import { stripHeartbeatToken } from "../heartbeat.js";
 import { HEARTBEAT_TOKEN, isSilentReplyText, SILENT_REPLY_TOKEN } from "../tokens.js";
 import { hasLineDirectives, parseLineDirectives } from "./line-directives.js";
@@ -14,6 +16,8 @@ export type NormalizeReplyOptions = {
   responsePrefix?: string;
   /** Context for template variable interpolation in responsePrefix */
   responsePrefixContext?: ResponsePrefixContext;
+  /** 出站回复正则替换规则 */
+  outboundRegex?: OutboundRegexRule[];
   onHeartbeatStrip?: () => void;
   stripHeartbeat?: boolean;
   silentToken?: string;
@@ -63,6 +67,11 @@ export function normalizeReplyPayload(
 
   if (text) {
     text = sanitizeUserFacingText(text, { errorContext: Boolean(payload.isError) });
+  }
+
+  // 应用出站正则替换规则
+  if (text && opts.outboundRegex?.length) {
+    text = applyOutboundRegex(text, opts.outboundRegex);
   }
   if (!text?.trim() && !hasMedia && !hasChannelData) {
     opts.onSkip?.("empty");

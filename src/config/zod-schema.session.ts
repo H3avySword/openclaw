@@ -132,10 +132,19 @@ export const SessionSchema = z
   .strict()
   .optional();
 
+const OutboundRegexRuleSchema = z
+  .object({
+    pattern: z.string(),
+    replacement: z.string(),
+    flags: z.string().optional(),
+  })
+  .strict();
+
 export const MessagesSchema = z
   .object({
     messagePrefix: z.string().optional(),
     responsePrefix: z.string().optional(),
+    outboundRegex: z.array(OutboundRegexRuleSchema).optional(),
     groupChat: GroupChatSchema,
     queue: QueueSchema,
     inbound: InboundDebounceSchema,
